@@ -3,6 +3,9 @@ import { getProducto } from "../api/producto"
 import { crearPedido } from "../api/pedido"
 import { ProductoCard } from "../components/productoCard"
 import { Carrito } from "../components/carrito"
+import { ClienteForm } from "../components/clienteForm"
+
+import type { CrearPedidoDTO } from "../types/pedido"
 
 type Producto = {
   id: number
@@ -46,15 +49,14 @@ export const Home = () => {
     0
   )
 
-  const finalizarCompra = async () => {
-    if (carrito.length === 0) return
+  const finalizarCompra = async (clienteData: any) => {
+    if (carrito.length === 0) {
+      alert("Carrito vacío")
+      return
+    }
 
-    const pedido = {
-      cliente: {
-        nombre: "Cliente Web",
-        telefono: "000",
-        direccion: "Sin direccion"
-      },
+    const pedido: CrearPedidoDTO = {
+      cliente: clienteData,
       carrito: carrito.map((item) => ({
         id: item.id,
         cantidad: item.cantidad
@@ -67,25 +69,57 @@ export const Home = () => {
     setCarrito([])
   }
 
+  const sumarCantidad = (id: number) => {
+    setCarrito((prev) =>
+      prev.map((p) => p.id === id ? { ...p, cantidad: p.cantidad + 1 } : p)
+    )
+  }
+
+  const restarCantidad = (id: number) => {
+    setCarrito((prev) =>
+      prev.map((p) =>
+        p.id === id
+          ? { ...p, cantidad: p.cantidad - 1 }
+          : p
+      ).filter((p) => p.cantidad > 0)
+    )
+  }
+
+  const eliminarItem = (id: number) => {
+    setCarrito((prev) => prev.filter((p) => p.id !== id))
+  }
+
+  const vaciarCarrito = () => {
+    setCarrito([])
+  }
+
   return (
-    <div>
+    <div className="container">
       <h1>Rotisería</h1>
 
       <h2>Productos</h2>
 
-      {productos.map((p) => (
-        <ProductoCard
-          key={p.id}
-          producto={p}
-          onAgregar={agregarAlCarrito}
-        />
-      ))}
+      <div className="productos">
+        {productos.map((p) => (
+          <ProductoCard
+            key={p.id}
+            producto={p}
+            onAgregar={agregarAlCarrito}
+          />
+        ))}
+      </div>
 
       <Carrito
         carrito={carrito}
         total={total}
-        onFinalizar={finalizarCompra}
+        onSumar={sumarCantidad}
+        onRestar={restarCantidad}
+        onEliminar={eliminarItem}
+        onVaciar={vaciarCarrito}
+        onFinalizar={() => { }}
       />
+
+      <ClienteForm onSubmit={finalizarCompra} />
     </div>
   )
 }
