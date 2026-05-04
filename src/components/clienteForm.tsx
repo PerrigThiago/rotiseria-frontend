@@ -3,9 +3,10 @@ import type { Cliente } from "../types/cliente"
 
 type Props = {
     onSubmit: (cliente: Cliente) => void
+    loading: boolean
 }
 
-export const ClienteForm = ({ onSubmit }: Props) => {
+export const ClienteForm = ({ onSubmit, loading }: Props) => {
     const [cliente, setCliente] = useState<Cliente>({
         nombre: "",
         telefono: "",
@@ -34,28 +35,30 @@ export const ClienteForm = ({ onSubmit }: Props) => {
         <form onSubmit={handleSubmit} autoComplete="off">
             <h2>Datos del cliente</h2>
 
-            <input 
+            <input
                 name="nombre"
                 placeholder="Nombre"
                 value={cliente.nombre}
                 onChange={handleChange}
             />
 
-            <input 
+            <input
                 name="telefono"
                 placeholder="Teléfono"
                 value={cliente.telefono}
                 onChange={handleChange}
             />
 
-            <input 
+            <input
                 name="direccion"
                 placeholder="Dirección"
                 value={cliente.direccion}
                 onChange={handleChange}
             />
 
-            <button type="submit">Confirmar pedido</button>
+            <button type="submit" disabled={loading}>
+                {loading ? "Enviando..." : "Confirmar pedido"}
+            </button>
         </form>
     )
 }

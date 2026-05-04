@@ -6,6 +6,7 @@ import { Carrito } from "../components/carrito"
 import { ClienteForm } from "../components/clienteForm"
 
 import type { CrearPedidoDTO } from "../types/pedido"
+import type { Cliente } from "../types/cliente"
 
 type Producto = {
   id: number
@@ -23,6 +24,8 @@ type CarritoItem = {
 export const Home = () => {
   const [productos, setProductos] = useState<Producto[]>([])
   const [carrito, setCarrito] = useState<CarritoItem[]>([])
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     getProducto().then(setProductos)
@@ -49,13 +52,17 @@ export const Home = () => {
     0
   )
 
-  const finalizarCompra = async (clienteData: any) => {
+  const finalizarCompra = async (clienteData: Cliente) => {
     if (carrito.length === 0) {
-      alert("Carrito vacío")
+      setError("El carrito está vacío")
       return
     }
 
-    const pedido: CrearPedidoDTO = {
+    try {
+      setLoading(true)
+      setError(null)
+
+      const pedido: CrearPedidoDTO = {
       cliente: clienteData,
       carrito: carrito.map((item) => ({
         id: item.id,
@@ -65,8 +72,14 @@ export const Home = () => {
 
     await crearPedido(pedido)
 
-    alert("Pedido realizado")
     setCarrito([])
+
+    } catch (err) {
+      setError("Error al crear el pedido")
+      console.error(err)
+    } finally {
+      setLoading(false)
+    }
   }
 
   const sumarCantidad = (id: number) => {
@@ -119,7 +132,12 @@ export const Home = () => {
         onFinalizar={() => { }}
       />
 
-      <ClienteForm onSubmit={finalizarCompra} />
+      {error && <p style={{ color: "red" }}>{error}</p>}
+
+      <ClienteForm 
+      onSubmit={finalizarCompra}
+      loading={loading} 
+      />
     </div>
   )
 }
