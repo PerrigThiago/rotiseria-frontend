@@ -360,3 +360,130 @@ button[type="submit"]:hover,
 /* ---- Utilidades ---- */
 .text-muted  { color: #7a6450; }
 .text-precio { font-size: 1rem; font-weight: 500; color: var(--cafe-oscuro); }
+
+/* ---- Login ---- */
+.login-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: var(--fondo);
+}
+
+.login-card {
+  background: #fff;
+  border: 1px solid var(--crema-suave);
+  border-radius: 16px;
+  padding: 2rem;
+  width: 100%;
+  max-width: 360px;
+}
+
+.login-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 1.75rem;
+}
+
+.login-logo-icon {
+  width: 36px;
+  height: 36px;
+  background: var(--cafe-oscuro);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-logo-text {
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--cafe-oscuro);
+}
+
+.login-titulo {
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--cafe-oscuro);
+  margin-bottom: 4px;
+}
+
+.login-subtitulo {
+  font-size: 13px;
+  color: #7a6450;
+  margin-bottom: 1.5rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 14px;
+}
+
+.field label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--cafe-oscuro);
+}
+
+.forgot {
+  display: block;
+  font-size: 12px;
+  color: var(--arena-dorada);
+  text-align: right;
+  margin-top: -6px;
+  margin-bottom: 16px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btn-login {
+  width: 100%;
+  padding: 10px;
+  background: var(--cafe-oscuro);
+  color: var(--texto-claro);
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.btn-login:hover { opacity: 0.88; }
+
+.login-divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 1.25rem 0;
+  font-size: 12px;
+  color: #7a6450;
+}
+
+.divider-line {
+  flex: 1;
+  height: 1px;
+  background: var(--crema-suave);
+}
+
+.register-row {
+  text-align: center;
+  font-size: 13px;
+  color: #7a6450;
+}
+
+.register-row a {
+  color: var(--cafe-oscuro);
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.login-error {
+  font-size: 13px;
+  color: #E24B4A;
+  margin-bottom: 10px;
+}

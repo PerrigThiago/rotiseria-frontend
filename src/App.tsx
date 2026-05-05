@@ -1,17 +1,40 @@
+import { Routes, Route } from "react-router-dom"
 import { Home } from "./pages/home"
-import { getToken } from "./utils/auth"
+import { Admin } from "./pages/admin"
+import { Empleado } from "./pages/empleado"
+
+import { ProtectedRoute } from "./components/protectedRoute"
 import { Login } from "./components/login"
 
-import "./index.css"
-
 function App() {
-  const token = getToken()
+  return (
+    <Routes>
 
-  if (!token) {
-    return <Login />
-  }
-  
-  return <Home />
+      {/* públicas */}
+      <Route path="/" element={<Home />} />
+      <Route path="/login" element={<Login />} />
+
+      {/* protegidas */}
+      <Route
+        path="/admin"
+        element={
+          <ProtectedRoute roles={["admin"]}>
+            <Admin />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/empleado"
+        element={
+          <ProtectedRoute roles={["empleado"]}>
+            <Empleado />
+          </ProtectedRoute>
+        }
+      />
+
+    </Routes>
+  )
 }
 
 export default App
