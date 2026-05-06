@@ -1,3 +1,127 @@
+import { useEffect, useState } from "react"
+import { getProducto, eliminarProducto, crearProducto } from "../api/producto"
+
+import type { Producto } from "../types/producto"
+
 export const Admin = () => {
-    return <h1>Dashboard Admin</h1>
+    const [productos, setProductos] = useState<Producto[]>([])
+    const [nombre, setNombre] = useState("")
+    const [precio, setPrecio] = useState(0)
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const data = await getProducto()
+            setProductos(data)
+        }
+
+        fetchData()
+    }, [])
+
+    const handleDelete = async (id: number) => { 
+        await eliminarProducto(id)
+        const data = await getProducto()
+        setProductos(data)
+    }
+
+    const handleCreate = async () => {
+        if (!nombre || !precio) return
+        await crearProducto({ nombre, precio })
+        const data = await getProducto()
+        setProductos(data)
+        setNombre("")
+        setPrecio(0)
+    }
+
+    return (
+        <div className="adm">
+ 
+            {/* Header */}
+            <div className="adm-header">
+                <div className="adm-header-left">
+                    <div className="adm-logo-box">
+                        {/* ícono o logo */}
+                    </div>
+                    <span className="adm-title">Rotisería — Admin</span>
+                </div>
+                <span className="adm-badge">Admin</span>
+            </div>
+ 
+            {/* Stats */}
+            <div className="adm-stats">
+                <div className="stat-card">
+                    <div className="stat-label">Productos</div>
+                    <div className="stat-value">{productos.length}</div>
+                </div>
+                <div className="stat-card">
+                    <div className="stat-label">Pedidos hoy</div>
+                    <div className="stat-value">—</div>
+                </div>
+                <div className="stat-card">
+                    <div className="stat-label">Total hoy</div>
+                    <div className="stat-value">—</div>
+                </div>
+            </div>
+ 
+            {/* Grid principal */}
+            <div className="adm-grid">
+ 
+                {/* Formulario crear */}
+                <div className="adm-card">
+                    <div className="adm-card-title">Nuevo producto</div>
+ 
+                    <div className="field-group">
+                        <label>Nombre</label>
+                        <input
+                            type="text"
+                            placeholder="Ej: Milanesa napolitana"
+                            value={nombre}
+                            onChange={(e) => setNombre(e.target.value)}
+                        />
+                    </div>
+ 
+                    <div className="field-group">
+                        <label>Precio</label>
+                        <input
+                            type="number"
+                            placeholder="Ej: 2500"
+                            value={precio || ""}
+                            onChange={(e) => setPrecio(Number(e.target.value))}
+                        />
+                    </div>
+ 
+                    <button className="btn-crear" onClick={handleCreate}>
+                        + Crear producto
+                    </button>
+                </div>
+ 
+                {/* Lista de productos */}
+                <div className="adm-card">
+                    <div className="adm-card-title">Productos</div>
+ 
+                    <div className="prod-list">
+                        {productos.length === 0 && (
+                            <p style={{ fontSize: "13px", color: "#7a6450" }}>
+                                No hay productos cargados.
+                            </p>
+                        )}
+                        {productos.map((p) => (
+                            <div key={p.id} className="prod-row">
+                                <div className="prod-icon" />
+                                <span className="prod-nombre">{p.nombre}</span>
+                                <span className="prod-precio">${p.precio.toLocaleString("es-AR")}</span>
+                                <button
+                                    className="btn-del"
+                                    title="Eliminar"
+                                    onClick={() => handleDelete(p.id)}
+                                >
+                                    🗑
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+ 
+            </div>
+        </div>
+    )
 }
