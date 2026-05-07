@@ -36,3 +36,22 @@ export const eliminarProducto = async (id: number) => {
     }
   })
 }
+
+export const editarProducto = async (
+  id: number,
+  producto: Omit<Producto, "id">
+) => {
+
+  const token = getToken()
+
+  const res = await fetch(`${API}/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`
+    },
+    body: JSON.stringify(producto)
+  })
+
+  return res.json()
+}

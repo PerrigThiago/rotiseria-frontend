@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { getProducto, eliminarProducto, crearProducto } from "../api/producto"
+import { getProducto, eliminarProducto, crearProducto, editarProducto } from "../api/producto"
 
 import type { Producto } from "../types/producto"
 
@@ -7,6 +7,7 @@ export const Admin = () => {
     const [productos, setProductos] = useState<Producto[]>([])
     const [nombre, setNombre] = useState("")
     const [precio, setPrecio] = useState(0)
+    const [editandoId, setEditandoId] = useState<number | null>(null)
 
     useEffect(() => {
         const fetchData = async () => {
@@ -17,17 +18,32 @@ export const Admin = () => {
         fetchData()
     }, [])
 
-    const handleDelete = async (id: number) => { 
+    const handleDelete = async (id: number) => {
         await eliminarProducto(id)
         const data = await getProducto()
+
         setProductos(data)
     }
 
     const handleCreate = async () => {
+
         if (!nombre || !precio) return
-        await crearProducto({ nombre, precio })
+
+        if (editandoId) {
+            await editarProducto(editandoId, { nombre, precio })
+            setEditandoId(null)
+        } else {
+            await crearProducto({ nombre, precio })
+        }
+
         const data = await getProducto()
         setProductos(data)
+        setNombre("")
+        setPrecio(0)
+    }
+
+    const handleCancelarEdicion = () => {
+        setEditandoId(null)
         setNombre("")
         setPrecio(0)
     }
@@ -65,9 +81,11 @@ export const Admin = () => {
             {/* Grid principal */}
             <div className="adm-grid">
  
-                {/* Formulario crear */}
+                {/* Formulario crear/editar */}
                 <div className="adm-card">
-                    <div className="adm-card-title">Nuevo producto</div>
+                    <div className="adm-card-title">
+                        {editandoId ? "Editar producto" : "Nuevo producto"}
+                    </div>
  
                     <div className="field-group">
                         <label>Nombre</label>
@@ -90,8 +108,14 @@ export const Admin = () => {
                     </div>
  
                     <button className="btn-crear" onClick={handleCreate}>
-                        + Crear producto
+                        {editandoId ? "Guardar cambios" : "+ Crear producto"}
                     </button>
+ 
+                    {editandoId && (
+                        <button className="btn-cancelar" onClick={handleCancelarEdicion}>
+                            Cancelar
+                        </button>
+                    )}
                 </div>
  
                 {/* Lista de productos */}
@@ -115,6 +139,13 @@ export const Admin = () => {
                                     onClick={() => handleDelete(p.id)}
                                 >
                                     🗑
+                                </button>
+                                <button onClick={() => {
+                                    setEditandoId(p.id)
+                                    setNombre(p.nombre)
+                                    setPrecio(p.precio)
+                                }}>
+                                    Editar
                                 </button>
                             </div>
                         ))}
